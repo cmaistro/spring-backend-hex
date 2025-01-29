@@ -1,0 +1,152 @@
+openapi: 3.0.0
+info:
+  title: Customer Management API
+  description: API para criação e manutenção de clientes em um sistema, com integração a um Authorization Server.
+  version: 1.0.0
+paths:
+  /v1/customers:
+    post:
+      summary: Criação de um novo cliente
+      description: Cria um novo cliente no sistema e registra as credenciais no Authorization Server.
+      operationId: createCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerDTO'
+      responses:
+        '201':
+          description: cliente criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: Identificador único do cliente
+                    example: 123e4567-e89b-12d3-a456-426614174000
+
+        '400':
+          description: Dados inválidos
+        '500':
+          description: Erro no servidor
+
+  /v1/customers/{customerId}:
+    get:
+      summary: Obter detalhes de um cliente
+      description: Retorna os detalhes de um cliente pelo seu ID.
+      operationId: getCustomerById
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID do cliente
+      responses:
+        '200':
+          description: Detalhes do cliente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        '404':
+          description: cliente não encontrado
+
+    put:
+      summary: Atualizar informações de um cliente
+      description: Atualiza os detalhes de um cliente pelo seu ID.
+      operationId: updateCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID do cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerDTO'
+      responses:
+        '200':
+          description: cliente atualizado com sucesso
+        '400':
+          description: Dados inválidos
+        '404':
+          description: cliente não encontrado
+
+    delete:
+      summary: Deletar um cliente
+      description: Remove um cliente do sistema pelo seu ID.
+      operationId: deleteCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID do cliente
+      responses:
+        '204':
+          description: cliente removido com sucesso
+        '404':
+          description: cliente não encontrado
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CustomerDTO:
+      type: object
+      required:
+        - name
+        - email
+        - phone
+        - role
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Identificador único do cliente
+        name:
+          type: string
+          description: Nome completo do cliente
+        email:
+          type: string
+          description: Email do cliente
+        phone:
+          type: string
+          description: Número de telefone do cliente
+        birthDate:
+          type: string
+          format: date
+          description: Data de nascimento do cliente
+        role:
+          type: string
+          description: Papel do cliente no sistema
+    ErrorDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Código do erro
+        message:
+          type: string
+          description: Mensagem de erro
+  responses:
+    UnauthorizedError:
+      description: Acesso não autorizado
+

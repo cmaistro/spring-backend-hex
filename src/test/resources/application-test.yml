@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: backend-test
+  cache:
+    type: none
+
+amazon:
+  dynamodb:
+    endpoint: ${DYNAMODB_ENDPOINT:http://localhost:8000}
+  aws:
+    region: us-east-1
+    accesskey: test
+    secretkey: test
+    profile: default
+
+logging:
+  level:
+    root: INFO
+    com.example.backend: DEBUG

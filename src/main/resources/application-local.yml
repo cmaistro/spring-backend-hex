@@ -1,0 +1,29 @@
+server:
+  port: ${SERVER_PORT:9000}
+
+spring:
+  application:
+    name: backend
+  docker:
+    compose:
+      enabled: true
+      file: ./docker/compose.yml
+
+  cache:
+    cache-names: "customers"
+    caffeine:
+      spec: "maximumSize=100,expireAfterAccess=300s"
+
+logging:
+  level:
+    root: INFO
+    com.example.backend: DEBUG
+
+amazon:
+  dynamodb:
+    endpoint: "http://localhost:8000/"
+  aws:
+    region: us-east-1
+    accesskey: local-key
+    secretkey: local-key2
+    profile: default

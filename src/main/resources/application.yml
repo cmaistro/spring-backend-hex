@@ -1,0 +1,34 @@
+server:
+  port: ${SERVER_PORT:9000}
+
+spring:
+  application:
+    name: ${APPLICATION_NAME:backend}
+  cache:
+    cache-names: "customers"
+    caffeine:
+      spec: ${CACHE_SPEC:maximumSize=100,expireAfterAccess=300s}
+
+logging:
+  pattern:
+    correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.example.backend: ${LOG_LEVEL_APP:INFO}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${ACTUATOR_ENDPOINTS:health,metrics,prometheus}
+  metrics:
+    enable.all: true
+
+amazon:
+  dynamodb:
+    endpoint: ${DYNAMODB_ENDPOINT:http://dynamodb-local:8000}
+  aws:
+    region: ${AWS_REGION:us-east-1}
+    accesskey: ${AWS_ACCESS_KEY:}
+    secretkey: ${AWS_SECRET_KEY:}
+    profile: ${AWS_PROFILE:default}
